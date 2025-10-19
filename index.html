@@ -978,38 +978,41 @@
         // API base URL
         const API_BASE_URL = 'http://localhost:5000/api';
 
-        // Örnek login fonksiyonu
+        // Backend login
         async function loginUser(email, password) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/auth/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email,
-                        password
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.data.user));
-                    return data;
-                } else {
-                    throw new Error(data.message);
-                }
-            } catch (error) {
-                throw error;
+            const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(data.error || 'Giriş başarısız');
             }
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            return data;
+        }
+
+        // Backend register
+        async function registerUser(username, email, password) {
+            const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password })
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(data.error || 'Kayıt başarısız');
+            }
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            return data;
         }
 
         // Örnek oda oluşturma
         async function createRoom(roomData) {
             const token = localStorage.getItem('token');
-
             const response = await fetch(`${API_BASE_URL}/rooms`, {
                 method: 'POST',
                 headers: {
@@ -1018,12 +1021,15 @@
                 },
                 body: JSON.stringify(roomData)
             });
-
-            return await response.json();
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(data.error || 'Oda oluşturulamadı');
+            }
+            return data;
         }
 
-        // Socket.io bağlantısı
-        const socket = io('http://localhost:5000');
+        // Socket.io (opsiyonel)
+        const socket = window.io ? window.io('http://localhost:5000') : null;
 
         // Modal işlevselliği
         const authModal = document.getElementById('authModal');
@@ -1094,89 +1100,83 @@
         switchToLogin.addEventListener('click', () => switchAuthTab('login'));
 
         // Giriş formu
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
-
-            // Basit doğrulama
             if (!email || !password) {
                 alert('Lütfen tüm alanları doldurun!');
                 return;
             }
-
-            // Burada normalde sunucuya giriş isteği gönderilir
-            // Şimdilik demo amaçlı başarılı giriş kabul ediyoruz
-            currentUser = {
-                name: email.split('@')[0],
-                email: email,
-                avatar: email[0].toUpperCase()
-            };
-
-            updateUIAfterAuth();
-            authModal.style.display = 'none';
-            loginForm.reset();
-
-            alert(`Hoş geldiniz, ${currentUser.name}!`);
+            try {
+                const { user } = await loginUser(email, password);
+                const displayName = user?.username || (user?.email || email).split('@')[0];
+                currentUser = {
+                    name: displayName,
+                    email: user?.email || email,
+                    avatar: displayName[0].toUpperCase()
+                };
+                updateUIAfterAuth();
+                authModal.style.display = 'none';
+                loginForm.reset();
+                alert(`Hoş geldiniz, ${currentUser.name}!`);
+            } catch (err) {
+                alert(err.message || 'Giriş başarısız');
+            }
         });
 
         // Kayıt formu
-        registerForm.addEventListener('submit', (e) => {
+        registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-
             const name = document.getElementById('registerName').value;
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = document.getElementById('registerConfirmPassword').value;
-
-            // Basit doğrulama
             if (!name || !email || !password || !confirmPassword) {
                 alert('Lütfen tüm alanları doldurun!');
                 return;
             }
-
             if (password !== confirmPassword) {
                 alert('Şifreler eşleşmiyor!');
                 return;
             }
-
             if (password.length < 6) {
                 alert('Şifre en az 6 karakter olmalıdır!');
                 return;
             }
-
-            // Burada normalde sunucuya kayıt isteği gönderilir
-            // Şimdilik demo amaçlı başarılı kayıt kabul ediyoruz
-            currentUser = {
-                name: name,
-                email: email,
-                avatar: name[0].toUpperCase()
-            };
-
-            updateUIAfterAuth();
-            authModal.style.display = 'none';
-            registerForm.reset();
-
-            alert(`Kayıt başarılı! Hoş geldiniz, ${currentUser.name}!`);
+            try {
+                const { user } = await registerUser(name, email, password);
+                const displayName = user?.username || name;
+                currentUser = {
+                    name: displayName,
+                    email: user?.email || email,
+                    avatar: displayName[0].toUpperCase()
+                };
+                updateUIAfterAuth();
+                authModal.style.display = 'none';
+                registerForm.reset();
+                alert(`Kayıt başarılı! Hoş geldiniz, ${currentUser.name}!`);
+            } catch (err) {
+                alert(err.message || 'Kayıt başarısız');
+            }
         });
 
         // Oda oluşturma formu
-        createRoomForm.addEventListener('submit', (e) => {
+        createRoomForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-
             const roomName = document.getElementById('roomName').value;
-            const roomLanguage = document.getElementById('roomLanguage').value;
-            const roomLevel = document.getElementById('roomLevel').value;
-            const roomTopic = document.getElementById('roomTopic').value;
-            const roomDescription = document.getElementById('roomDescription').value;
-
-            // Burada normalde sunucuya istek gönderilir
-            alert(`Dil pratiği odası başarıyla oluşturuldu!\n\nAd: ${roomName}\nDil: ${roomLanguage}\nSeviye: ${roomLevel}\nPratik Türü: ${roomTopic}\nAçıklama: ${roomDescription}`);
-
-            // Formu sıfırla ve modalı kapat
-            createRoomForm.reset();
-            createRoomModal.style.display = 'none';
+            if (!roomName) {
+                alert('Lütfen oda adını girin!');
+                return;
+            }
+            try {
+                await createRoom({ name: roomName });
+                alert('Dil pratiği odası başarıyla oluşturuldu!');
+                createRoomForm.reset();
+                createRoomModal.style.display = 'none';
+            } catch (err) {
+                alert(err.message || 'Oda oluşturulamadı');
+            }
         });
 
         // Çıkış butonu
