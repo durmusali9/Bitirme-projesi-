@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LangTalk - Dil Pratiği Platformu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+         :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #4cc9f0;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --danger-color: #ef476f;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --gray-color: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark-color), #16213e);
+            color: var(--light-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        /* Header Styles */
+        
+        header {
+            background-color: rgba(26, 26, 46, 0.95);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo h1 {
+            font-size: 26px;
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+        
+        .logo-icon {
+            font-size: 32px;
+            color: var(--accent-color);
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        
+        .user-avatar-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .user-name {
+            font-weight: 600;
+        }
+        /* Language Level Badge */
+        
+        .level-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        .level-beginner {
+            background-color: var(--success-color);
+            color: #000;
+        }
+        
+        .level-intermediate {
+            background-color: var(--warning-color);
+            color: #000;
+        }
+        
+        .level-advanced {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        /* Main Content */
+        
+        .main-content {
+            display: flex;
+            margin-top: 30px;
+            gap: 25px;
+        }
+        /* Sidebar */
+        
+        .sidebar {
+            flex: 0 0 280px;
+            background-color: rgba(40, 40, 60, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            height: fit-content;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+        
+        .language-list,
+        .level-list {
+            list-style: none;
+        }
+        
+        .language-item,
+        .level-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .language-item:hover,
+        .level-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .language-item.active,
+        .level-item.active {
+            background-color: var(--primary-color);
+        }
+        
+        .language-flag {
+            font-size: 20px;
+        }
+        /* Rooms Section */
+        
+        .rooms-section {
+            flex: 1;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .section-header h2 {
+            font-size: 26px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .create-room-btn {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .create-room-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(67, 97, 238, 0.4);
+        }
+        
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+        
+        .room-card {
+            background-color: rgba(40, 40, 60, 0.8);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .room-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .room-header {
+            padding: 18px;
+            background: linear-gradient(45deg, rgba(67, 97, 238, 0.3), rgba(58, 12, 163, 0.3));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .room-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .room-language {
+            font-size: 14px;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .room-body {
+            padding: 18px;
+        }
+        
+        .room-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .room-users {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .user-count {
+            background-color: var(--primary-color);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .room-level {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .room-description {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .room-topic {
+            display: inline-block;
+            background-color: rgba(76, 201, 240, 0.2);
+            color: var(--accent-color);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .room-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn-join {
+            flex: 1;
+            background: linear-gradient(45deg, var(--success-color), #05b38c);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-join:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(6, 214, 160, 0.4);
+        }
+        /* Active Users */
+        
+        .active-users {
+            margin-top: 40px;
+            background-color: rgba(40, 40, 60, 0.8);
+            border-radius: 12px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .users-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(45deg, rgba(67, 97, 238, 0.2), rgba(58, 12, 163, 0.2));
+            padding: 12px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 600;
+        }
+        
+        .user-languages {
+            font-size: 12px;
+            color: var(--accent-color);
+        }
+        /* Modal */
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            width: 90%;
+            max-width: 500px;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .close-modal {
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--gray-color);
+            transition: color 0.2s;
+        }
+        
+        .close-modal:hover {
+            color: var(--danger-color);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.3);
+        }
+        
+        .form-footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .form-footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+        /* Auth Tabs */
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .auth-tab.active {
+            color: var(--accent-color);
+            border-bottom: 3px solid var(--accent-color);
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        /* Footer */
+        
+        footer {
+            margin-top: 60px;
+            padding: 30px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: var(--gray-color);
+        }
+        /* Responsive */
+        
+        @media (max-width: 968px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .sidebar {
+                flex: 1;
+            }
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .user-actions {
+                width: 100%;
+                justify-content: center;
+            }
+            .section-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            .create-room-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon"><i class="fas fa-language"></i></div>
+                    <h1>LangTalk</h1>
+                </div>
+                <div class="user-actions" id="userActions">
+                    <!-- Giriş yapılmamışsa gösterilecek butonlar -->
+                    <div id="guestActions">
+                        <button class="btn btn-outline" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Giriş Yap</button>
+                        <button class="btn btn-primary" id="registerBtn"><i class="fas fa-user-plus"></i> Kayıt Ol</button>
+                    </div>
+                    <!-- Giriş yapılmışsa gösterilecek kullanıcı bilgisi -->
+                    <div class="user-profile" id="userProfile" style="display: none;">
+                        <div class="user-avatar-small" id="userAvatar">U</div>
+                        <div class="user-name" id="userDisplayName">Kullanıcı</div>
+                        <button class="btn btn-outline" id="logoutBtn" style="margin-left: 10px;"><i class="fas fa-sign-out-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <h2><i class="fas fa-globe-americas"></i> Diller</h2>
+                    <ul class="language-list">
+                        <li class="language-item active">
+                            <span class="language-flag">🌍</span>
+                            <span>Tüm Diller</span>
+                        </li>
+                        <li class="language-item">
+                            <span class="language-flag">🇬🇧</span>
+                            <span>İngilizce</span>
+                        </li>
+                        <li class="language-item">
+                            <span class="language-flag">🇪🇸</span>
+                            <span>İspanyolca</span>
+                        </li>
+                        <li class="language-item">
+                            <span class="language-flag">🇫🇷</span>
+                            <span>Fransızca</span>
+                        </li>
+                        <li class="language-item">
+                            <span class="language-flag">🇩🇪</span>
+                            <span>Almanca</span>
+                        </li>
+                        <li class="language-item">
+                            <span class="language-flag">🇯🇵</span>
+                            <span>Japonca</span>
+                        </li>
+                        <li class="language-item">
+                            <span class="language-flag">🇨🇳</span>
+                            <span>Çince</span>
+                        </li>
+                        <li class="language-item">
+                            <span class="language-flag">🇷🇺</span>
+                            <span>Rusça</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h2><i class="fas fa-signal"></i> Seviyeler</h2>
+                    <ul class="level-list">
+                        <li class="level-item active">
+                            <span>Tüm Seviyeler</span>
+                        </li>
+                        <li class="level-item">
+                            <span>Başlangıç <span class="level-badge level-beginner">A1-A2</span></span>
+                        </li>
+                        <li class="level-item">
+                            <span>Orta <span class="level-badge level-intermediate">B1-B2</span></span>
+                        </li>
+                        <li class="level-item">
+                            <span>İleri <span class="level-badge level-advanced">C1-C2</span></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h2><i class="fas fa-bullseye"></i> Pratik Türü</h2>
+                    <ul class="level-list">
+                        <li class="level-item active">
+                            <span>Tüm Pratikler</span>
+                        </li>
+                        <li class="level-item">
+                            <span><i class="fas fa-comments"></i> Günlük Konuşma</span>
+                        </li>
+                        <li class="level-item">
+                            <span><i class="fas fa-briefcase"></i> İş Dili</span>
+                        </li>
+                        <li class="level-item">
+                            <span><i class="fas fa-graduation-cap"></i> Akademik</span>
+                        </li>
+                        <li class="level-item">
+                            <span><i class="fas fa-theater-masks"></i> Senaryo Pratiği</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Rooms Section -->
+            <div class="rooms-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-users"></i> Aktif Dil Pratiği Odaları</h2>
+                    <div class="create-room-btn" id="createRoomBtn">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Yeni Oda Oluştur</span>
+                    </div>
+                </div>
+
+                <div class="rooms-grid">
+                    <!-- Room 1 -->
+                    <div class="room-card">
+                        <div class="room-header">
+                            <div>
+                                <div class="room-title">İngilizce Günlük Konuşma</div>
+                                <div class="room-language"><i class="fas fa-language"></i> İngilizce</div>
+                            </div>
+                            <div class="room-level level-beginner">Başlangıç</div>
+                        </div>
+                        <div class="room-body">
+                            <div class="room-topic">#günlük-hayat #tanışma</div>
+                            <div class="room-info">
+                                <div class="room-users">
+                                    <span class="user-count">6</span>
+                                    <span>Öğrenci</span>
+                                </div>
+                                <div class="room-topic-count"><i class="far fa-comments"></i> 12 Konu</div>
+                            </div>
+                            <div class="room-description">
+                                Günlük hayatta kullanılan temel İngilizce ifadeleri pratik yapıyoruz. Yeni başlayanlar için ideal!
+                            </div>
+                            <div class="room-actions">
+                                <div class="btn-join"><i class="fas fa-microphone"></i> Katıl & Konuş</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Room 2 -->
+                    <div class="room-card">
+                        <div class="room-header">
+                            <div>
+                                <div class="room-title">İspanyolca Pratik - Serbest Konuşma</div>
+                                <div class="room-language"><i class="fas fa-language"></i> İspanyolca</div>
+                            </div>
+                            <div class="room-level level-intermediate">Orta</div>
+                        </div>
+                        <div class="room-body">
+                            <div class="room-topic">#serbest-konuşma #kültür</div>
+                            <div class="room-info">
+                                <div class="room-users">
+                                    <span class="user-count">4</span>
+                                    <span>Öğrenci</span>
+                                </div>
+                                <div class="room-topic-count"><i class="far fa-comments"></i> 8 Konu</div>
+                            </div>
+                            <div class="room-description">
+                                İspanyolca konuşma akıcılığınızı geliştirin. Orta seviye öğrenciler için uygundur.
+                            </div>
+                            <div class="room-actions">
+                                <div class="btn-join"><i class="fas fa-microphone"></i> Katıl & Konuş</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Room 3 -->
+                    <div class="room-card">
+                        <div class="room-header">
+                            <div>
+                                <div class="room-title">Fransızca İş Dili</div>
+                                <div class="room-language"><i class="fas fa-language"></i> Fransızca</div>
+                            </div>
+                            <div class="room-level level-advanced">İleri</div>
+                        </div>
+                        <div class="room-body">
+                            <div class="room-topic">#iş-dili #profesyonel</div>
+                            <div class="room-info">
+                                <div class="room-users">
+                                    <span class="user-count">3</span>
+                                    <span>Öğrenci</span>
+                                </div>
+                                <div class="room-topic-count"><i class="far fa-comments"></i> 5 Konu</div>
+                            </div>
+                            <div class="room-description">
+                                İş toplantıları, müzakereler ve profesyonel yazışmalar için Fransızca pratiği.
+                            </div>
+                            <div class="room-actions">
+                                <div class="btn-join"><i class="fas fa-microphone"></i> Katıl & Konuş</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Users -->
+                <div class="active-users">
+                    <h2><i class="fas fa-user-check"></i> Çevrimiçi Dil Öğrenenler</h2>
+                    <div class="users-list">
+                        <div class="user-card">
+                            <div class="user-avatar">A</div>
+                            <div class="user-info">
+                                <div class="user-name">Ahmet</div>
+                                <div class="user-languages">🇬🇧 🇩🇪</div>
+                            </div>
+                        </div>
+                        <div class="user-card">
+                            <div class="user-avatar">Z</div>
+                            <div class="user-info">
+                                <div class="user-name">Zeynep</div>
+                                <div class="user-languages">🇫🇷 🇪🇸</div>
+                            </div>
+                        </div>
+                        <div class="user-card">
+                            <div class="user-avatar">M</div>
+                            <div class="user-info">
+                                <div class="user-name">Mehmet</div>
+                                <div class="user-languages">🇬🇧 🇯🇵</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-user-circle"></i> <span id="authModalTitle">Giriş Yap</span></h2>
+                <span class="close-modal">&times;</span>
+            </div>
+
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="loginTab">Giriş Yap</div>
+                <div class="auth-tab" id="registerTab">Kayıt Ol</div>
+            </div>
+
+            <!-- Giriş Formu -->
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label for="loginEmail">E-posta</label>
+                    <input type="email" id="loginEmail" class="form-control" placeholder="E-posta adresinizi girin" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Şifre</label>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Şifrenizi girin" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                    </button>
+                </div>
+                <div class="form-footer">
+                    Hesabınız yok mu? <a id="switchToRegister">Kayıt Olun</a>
+                </div>
+            </form>
+
+            <!-- Kayıt Formu -->
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label for="registerName">Ad Soyad</label>
+                    <input type="text" id="registerName" class="form-control" placeholder="Adınız ve soyadınız" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">E-posta</label>
+                    <input type="email" id="registerEmail" class="form-control" placeholder="E-posta adresinizi girin" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Şifre</label>
+                    <input type="password" id="registerPassword" class="form-control" placeholder="Şifrenizi girin (en az 6 karakter)" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerConfirmPassword">Şifre Tekrar</label>
+                    <input type="password" id="registerConfirmPassword" class="form-control" placeholder="Şifrenizi tekrar girin" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerLanguages">Öğrenmek İstediğiniz Diller</label>
+                    <select id="registerLanguages" class="form-control" multiple>
+                        <option value="english">İngilizce</option>
+                        <option value="spanish">İspanyolca</option>
+                        <option value="french">Fransızca</option>
+                        <option value="german">Almanca</option>
+                        <option value="japanese">Japonca</option>
+                    </select>
+                    <small>Çoklu seçim için Ctrl tuşunu basılı tutun</small>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-user-plus"></i> Kayıt Ol
+                    </button>
+                </div>
+                <div class="form-footer">
+                    Zaten hesabınız var mı? <a id="switchToLogin">Giriş Yapın</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Room Modal -->
+    <div class="modal" id="createRoomModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-plus-circle"></i> Yeni Dil Pratiği Odası Oluştur</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="createRoomForm">
+                <div class="form-group">
+                    <label for="roomName">Oda Adı</label>
+                    <input type="text" id="roomName" class="form-control" placeholder="Örn: İngilizce Günlük Konuşma Pratiği" required>
+                </div>
+                <div class="form-group">
+                    <label for="roomLanguage">Pratik Dili</label>
+                    <select id="roomLanguage" class="form-control" required>
+                        <option value="">Dil seçin</option>
+                        <option value="english">İngilizce</option>
+                        <option value="spanish">İspanyolca</option>
+                        <option value="french">Fransızca</option>
+                        <option value="german">Almanca</option>
+                        <option value="japanese">Japonca</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="roomLevel">Seviye</label>
+                    <select id="roomLevel" class="form-control" required>
+                        <option value="">Seviye seçin</option>
+                        <option value="beginner">Başlangıç (A1-A2)</option>
+                        <option value="intermediate">Orta (B1-B2)</option>
+                        <option value="advanced">İleri (C1-C2)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="roomTopic">Pratik Türü</label>
+                    <select id="roomTopic" class="form-control" required>
+                        <option value="">Pratik türü seçin</option>
+                        <option value="daily">Günlük Konuşma</option>
+                        <option value="business">İş Dili</option>
+                        <option value="academic">Akademik</option>
+                        <option value="scenario">Senaryo Pratiği</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="roomDescription">Açıklama</label>
+                    <textarea id="roomDescription" class="form-control" rows="3" placeholder="Odanızın amacını ve pratik konularını açıklayın"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-plus-circle"></i> Odayı Oluştur
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>LangTalk &copy; 2023 - Dil Pratiği Platformu</p>
+            <p>Dünyanın dört bir yanındaki insanlarla dil pratiği yapın, konuşma becerilerinizi geliştirin!</p>
+        </div>
+    </footer>
+
+    <script>
+        // Kullanıcı durumu
+        let currentUser = null;
+        //api kısmı
+        // API base URL
+        const API_BASE_URL = 'http://localhost:5000/api';
+
+        // Örnek login fonksiyonu
+        async function loginUser(email, password) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.data.user));
+                    return data;
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        // Örnek oda oluşturma
+        async function createRoom(roomData) {
+            const token = localStorage.getItem('token');
+
+            const response = await fetch(`${API_BASE_URL}/rooms`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(roomData)
+            });
+
+            return await response.json();
+        }
+
+        // Socket.io bağlantısı
+        const socket = io('http://localhost:5000');
+
+        // Modal işlevselliği
+        const authModal = document.getElementById('authModal');
+        const createRoomModal = document.getElementById('createRoomModal');
+        const closeModals = document.querySelectorAll('.close-modal');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const createRoomForm = document.getElementById('createRoomForm');
+
+        // Butonlar
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const createRoomBtn = document.getElementById('createRoomBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Kullanıcı arayüz elemanları
+        const guestActions = document.getElementById('guestActions');
+        const userProfile = document.getElementById('userProfile');
+        const userDisplayName = document.getElementById('userDisplayName');
+        const userAvatar = document.getElementById('userAvatar');
+
+        // Auth tab'ları
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        const switchToRegister = document.getElementById('switchToRegister');
+        const switchToLogin = document.getElementById('switchToLogin');
+        const authModalTitle = document.getElementById('authModalTitle');
+
+        // Giriş butonuna tıklama
+        loginBtn.addEventListener('click', () => {
+            showAuthModal('login');
+        });
+
+        // Kayıt butonuna tıklama
+        registerBtn.addEventListener('click', () => {
+            showAuthModal('register');
+        });
+
+        // Oda oluşturma modalını aç
+        createRoomBtn.addEventListener('click', () => {
+            if (!currentUser) {
+                alert('Oda oluşturmak için giriş yapmalısınız!');
+                showAuthModal('login');
+                return;
+            }
+            createRoomModal.style.display = 'flex';
+        });
+
+        // Modalı kapat
+        closeModals.forEach(closeBtn => {
+            closeBtn.addEventListener('click', (e) => {
+                const modal = e.target.closest('.modal');
+                modal.style.display = 'none';
+            });
+        });
+
+        // Modal dışına tıklayınca kapat
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        });
+
+        // Auth tab'larını değiştirme
+        loginTab.addEventListener('click', () => switchAuthTab('login'));
+        registerTab.addEventListener('click', () => switchAuthTab('register'));
+        switchToRegister.addEventListener('click', () => switchAuthTab('register'));
+        switchToLogin.addEventListener('click', () => switchAuthTab('login'));
+
+        // Giriş formu
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // Basit doğrulama
+            if (!email || !password) {
+                alert('Lütfen tüm alanları doldurun!');
+                return;
+            }
+
+            // Burada normalde sunucuya giriş isteği gönderilir
+            // Şimdilik demo amaçlı başarılı giriş kabul ediyoruz
+            currentUser = {
+                name: email.split('@')[0],
+                email: email,
+                avatar: email[0].toUpperCase()
+            };
+
+            updateUIAfterAuth();
+            authModal.style.display = 'none';
+            loginForm.reset();
+
+            alert(`Hoş geldiniz, ${currentUser.name}!`);
+        });
+
+        // Kayıt formu
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+            // Basit doğrulama
+            if (!name || !email || !password || !confirmPassword) {
+                alert('Lütfen tüm alanları doldurun!');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert('Şifreler eşleşmiyor!');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('Şifre en az 6 karakter olmalıdır!');
+                return;
+            }
+
+            // Burada normalde sunucuya kayıt isteği gönderilir
+            // Şimdilik demo amaçlı başarılı kayıt kabul ediyoruz
+            currentUser = {
+                name: name,
+                email: email,
+                avatar: name[0].toUpperCase()
+            };
+
+            updateUIAfterAuth();
+            authModal.style.display = 'none';
+            registerForm.reset();
+
+            alert(`Kayıt başarılı! Hoş geldiniz, ${currentUser.name}!`);
+        });
+
+        // Oda oluşturma formu
+        createRoomForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const roomName = document.getElementById('roomName').value;
+            const roomLanguage = document.getElementById('roomLanguage').value;
+            const roomLevel = document.getElementById('roomLevel').value;
+            const roomTopic = document.getElementById('roomTopic').value;
+            const roomDescription = document.getElementById('roomDescription').value;
+
+            // Burada normalde sunucuya istek gönderilir
+            alert(`Dil pratiği odası başarıyla oluşturuldu!\n\nAd: ${roomName}\nDil: ${roomLanguage}\nSeviye: ${roomLevel}\nPratik Türü: ${roomTopic}\nAçıklama: ${roomDescription}`);
+
+            // Formu sıfırla ve modalı kapat
+            createRoomForm.reset();
+            createRoomModal.style.display = 'none';
+        });
+
+        // Çıkış butonu
+        logoutBtn.addEventListener('click', () => {
+            currentUser = null;
+            guestActions.style.display = 'flex';
+            userProfile.style.display = 'none';
+            alert('Başarıyla çıkış yaptınız!');
+        });
+
+        // Dil seçimi
+        const languageItems = document.querySelectorAll('.language-item');
+        languageItems.forEach(item => {
+            item.addEventListener('click', () => {
+                languageItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+
+        // Seviye seçimi
+        const levelItems = document.querySelectorAll('.level-item');
+        levelItems.forEach(item => {
+            item.addEventListener('click', () => {
+                levelItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+
+        // Odaya katılma butonları
+        const joinButtons = document.querySelectorAll('.btn-join');
+        joinButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (!currentUser) {
+                    alert('Odaya katılmak için giriş yapmalısınız!');
+                    showAuthModal('login');
+                    return;
+                }
+
+                const roomTitle = button.closest('.room-card').querySelector('.room-title').textContent;
+                const roomLanguage = button.closest('.room-card').querySelector('.room-language').textContent;
+                alert(`${roomTitle} odasına katılıyorsunuz!\n\nDil: ${roomLanguage}\n\nSesli sohbet başlatılıyor...`);
+            });
+        });
+
+        // Yardımcı fonksiyonlar
+        function showAuthModal(tab) {
+            authModal.style.display = 'flex';
+            switchAuthTab(tab);
+        }
+
+        function switchAuthTab(tab) {
+            if (tab === 'login') {
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+                authModalTitle.textContent = 'Giriş Yap';
+            } else {
+                loginTab.classList.remove('active');
+                registerTab.classList.add('active');
+                loginForm.classList.remove('active');
+                registerForm.classList.add('active');
+                authModalTitle.textContent = 'Kayıt Ol';
+            }
+        }
+
+        function updateUIAfterAuth() {
+            guestActions.style.display = 'none';
+            userProfile.style.display = 'flex';
+            userDisplayName.textContent = currentUser.name;
+            userAvatar.textContent = currentUser.avatar;
+        }
+
+        // Sayfa yüklendiğinde kontrol et (demo amaçlı)
+        window.addEventListener('DOMContentLoaded', () => {
+            // Demo amaçlı, sayfa yüklendiğinde giriş yapılmamış durumu göster
+            guestActions.style.display = 'flex';
+            userProfile.style.display = 'none';
+        });
+    </script>
+</body>
+
+</html>
